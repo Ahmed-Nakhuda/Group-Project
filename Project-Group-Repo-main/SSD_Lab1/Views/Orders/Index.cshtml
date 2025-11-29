@@ -1,0 +1,75 @@
+﻿@model IEnumerable<SSD_Lab1.Models.Order>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Order</a>
+</p>
+
+<table class="table table-striped table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.OrderDate)</th>
+            <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+            <th>@Html.DisplayNameFor(model => model.LastName)</th>
+            <th>@Html.DisplayNameFor(model => model.PhoneNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.Province)</th>
+            <th>@Html.DisplayNameFor(model => model.City)</th>
+            <th>@Html.DisplayNameFor(model => model.Street)</th>
+            <th>@Html.DisplayNameFor(model => model.TotalPrice)</th>
+            <th>Products Ordered</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                <td>@order.FirstName</td>
+                <td>@order.LastName</td>
+                <td>@order.PhoneNumber</td>
+                <td>@order.Email</td>
+                <td>@order.Province</td>
+                <td>@order.City</td>
+                <td>@order.Street</td>
+                <td>@order.TotalPrice.ToString("C")</td>
+                <td>
+                    @if (order.OrderItems != null && order.OrderItems.Any())
+                    {
+                        @* Group the order items by company name *@
+                        var groupedByCompany = order.OrderItems
+                        .GroupBy(oi => oi.Product.Company?.Name ?? "Unknown Company");
+                        @foreach (var companyGroup in groupedByCompany)
+                        {
+                            <div class="mb-2">
+                                <h6 class="fw-bold mb-1">@companyGroup.Key</h6> 
+                                <ul class="mb-0 mt-0 ps-3">
+                                    @foreach (var item in companyGroup)
+                                    {
+                                        <li class="mb-0">
+                                            @item.Product.Name (Qty: @item.Quantity) - $@item.UnitPrice
+                                            - (@item.Product.Id.ToString()[..5])
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <em>No items</em>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@order.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
