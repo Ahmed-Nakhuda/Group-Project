@@ -33,7 +33,7 @@ else
             <li class="list-group-item">
                 <strong>@msg.User.FirstName</strong>
                 <strong>@msg.User?.LastName</strong>:
-                @msg.Content
+                @Html.Encode(msg.Content).Replace("\n", "<br />")
                 <br />
                 <small class="text-muted">@msg.SentAt.ToString("g")</small>
             </li>
