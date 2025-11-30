@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -200,55 +200,70 @@ namespace SSD_Lab1.Controllers
 
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var order = await _context.Orders.FindAsync(id);
             if (order == null)
-            {
                 return NotFound();
-            }
-            return View(order);
+
+            var model = new EditOrderViewModel
+            {
+                Id = order.Id,
+                FirstName = order.FirstName,
+                LastName = order.LastName,
+                Email = order.Email,
+                PhoneNumber = order.PhoneNumber,
+                Province = order.Province,
+                City = order.City,
+                Street = order.Street
+            };
+
+            return View(model);
         }
+
 
         // POST: Orders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,OrderDate,CustomerName,TotalPrice")] Order order)
+        public async Task<IActionResult> Edit(Guid id, EditOrderViewModel model)
         {
-            if (id != order.Id)
-            {
+            if (id != model.Id)
                 return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(model); 
+
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null)
+                return NotFound();
+
+            // Map ViewModel -> Entity
+            order.FirstName = model.FirstName;
+            order.LastName = model.LastName;
+            order.Email = model.Email;
+            order.PhoneNumber = model.PhoneNumber;
+            order.Province = model.Province;
+            order.City = model.City;
+            order.Street = model.Street;
+
+            try
+            {
+                _context.Update(order);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(order.Id))
+                    return NotFound();
+                throw;
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            return RedirectToAction(nameof(Index));
         }
+
+
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
