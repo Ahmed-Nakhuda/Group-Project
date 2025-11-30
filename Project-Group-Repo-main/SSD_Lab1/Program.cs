@@ -52,9 +52,6 @@ namespace SSD_Lab1
                 app.UseHsts();
             }
 
-            // Use the global exception handler
-            app.UseExceptionHandler(options => { });
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
