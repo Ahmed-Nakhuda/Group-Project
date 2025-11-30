@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SSD_Lab1.Models.Order>
+@model IEnumerable<SSD_Lab1.Models.Order>
 
 @{
     ViewData["Title"] = "Orders";
@@ -68,6 +68,9 @@
                 </td>
                 <td>
                     <a asp-action="Delete" asp-route-id="@order.Id">Delete</a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@order.Id">Edit</a>
                 </td>
             </tr>
         }
