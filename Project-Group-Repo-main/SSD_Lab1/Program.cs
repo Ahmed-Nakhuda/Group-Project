@@ -58,6 +58,16 @@ namespace SSD_Lab1
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            app.Use(async (context, next) =>
+                    {
+                        context.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                        context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+                        context.Response.Headers.Add("Referrer-Policy", "no-referrer");
+                        context.Response.Headers.Add("Content-Security-Policy", 
+                                                     "default-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self';");
+                        await next();
+                    });
+
             app.UseRouting();
 
             app.UseAuthentication();
