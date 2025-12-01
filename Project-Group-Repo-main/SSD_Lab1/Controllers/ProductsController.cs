@@ -50,7 +50,7 @@ namespace SSD_Lab1.Controllers
         // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_context.Companies.Where(c => !c.IsDeleted), "Id", "Name");
             return View();
         }
 
@@ -81,7 +81,7 @@ namespace SSD_Lab1.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", product.CompanyId);
+            ViewData["CompanyId"] = new SelectList(_context.Companies.Where(c => !c.IsDeleted),"Id","Name",product.CompanyId);
             return View(product);
         }
 
