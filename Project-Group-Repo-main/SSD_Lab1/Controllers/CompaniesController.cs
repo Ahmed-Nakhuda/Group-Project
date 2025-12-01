@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,10 +28,13 @@ namespace SSD_Lab1.Controllers
         public async Task<IActionResult> Index()
         {
             var companies = await _context.Companies
-                .AsNoTracking() // Improve read performance
+                .Where(c => !c.IsDeleted)   
+                .AsNoTracking()
                 .ToListAsync();
+
             return View(companies);
         }
+
 
         // GET: Companies/Details/5
         [Authorize(Roles = "Supervisor, Employee")]
@@ -148,7 +151,7 @@ namespace SSD_Lab1.Controllers
             return View(company);
         }
 
-        // GET: Companies/Delete/5
+
         [Authorize(Roles = "Supervisor")]
         public async Task<IActionResult> Delete(Guid? id)
         {
@@ -170,6 +173,7 @@ namespace SSD_Lab1.Controllers
         // POST: Companies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Supervisor")]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var company = await _context.Companies.FindAsync(id);
