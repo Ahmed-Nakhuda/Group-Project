@@ -63,7 +63,12 @@ namespace SSD_Lab1
                 context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
                 context.Response.Headers.Append("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
                 context.Response.Headers.Append("Content-Security-Policy",
-                                  "default-src 'self'; script-src 'self'; img-src 'self' data:; font-src 'self';");
+                                                "default-src 'self'; " +
+                                                "style-src 'self' https://cdnjs.cloudflare.com; " +
+                                                "font-src 'self' https://cdnjs.cloudflare.com data:; " +
+                                                "connect-src 'self' http://localhost:* https://localhost:* ws://localhost:* wss://localhost:*; " +
+                                                "img-src 'self' data:; " +
+                                                "script-src 'self';");
                 await next();
             });
 
