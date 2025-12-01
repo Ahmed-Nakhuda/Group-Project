@@ -37,6 +37,7 @@ namespace SSD_Lab1
             builder.Services.AddAntiforgery(options =>
             {
                 options.HeaderName = "X-CSRF-TOKEN";
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             });
 
             var app = builder.Build();
